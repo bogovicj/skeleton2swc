@@ -19,6 +19,7 @@ import sc.fiji.analyzeSkeleton.AnalyzeSkeleton_;
 import sc.fiji.analyzeSkeleton.Edge;
 import sc.fiji.analyzeSkeleton.Graph;
 import sc.fiji.analyzeSkeleton.Point;
+import sc.fiji.analyzeSkeleton.ShapeMeasure.DistancePair;
 import sc.fiji.analyzeSkeleton.SkeletonResult;
 import sc.fiji.analyzeSkeleton.Vertex;
 import tracing.Path;
@@ -30,6 +31,7 @@ public class Skeleton2Swc {
 	public static void main(String[] args) {
 		
 		ImagePlus imp = IJ.openImage( args[ 0 ] );
+		boolean doShapeMeasure = true;
 		
 		if( imp.getBitDepth() != ImagePlus.GRAY8 )
 		{
@@ -66,7 +68,27 @@ public class Skeleton2Swc {
 			if( g.getVertices().size() > 100 )
 			{
 				System.out.println( "skeleton "  + (i++) + " has " + g.getVertices().size() + " vertices." );
-				
+				HashMap< Edge, DistancePair > result = null;
+				if( doShapeMeasure )
+				{
+					ShapeMeasure sm = new ShapeMeasure( g );
+					result = sm.compute();
+
+					String shapeoutname = baseoutputname + "_" + i + "_shape.csv";
+					// write the shape measures
+					try
+					{
+						final PrintWriter shapepw = new PrintWriter(new OutputStreamWriter(new FileOutputStream( shapeoutname ), "UTF-8"));
+						shapepw.print( sm.print() );
+						shapepw.flush();
+						shapepw.close();
+					} catch ( Exception e )
+					{
+						e.printStackTrace();
+					} 
+
+				}
+
 				ArrayList<SWCPoint> swcPts = graphToSwc( g );
 				System.out.println( "  num points of output : "  + swcPts.size());
 				
