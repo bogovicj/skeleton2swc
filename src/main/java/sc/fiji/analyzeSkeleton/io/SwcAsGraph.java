@@ -45,8 +45,8 @@ public class SwcAsGraph
 				branchAndTipIds.add( swcPts.get( i ).getId() );
 		}
 
-		System.out.println( Arrays.toString( numChildren ) );
-		System.out.println( branchAndTipIds );
+//		System.out.println( Arrays.toString( numChildren ) );
+//		System.out.println( branchAndTipIds );
 
 		HashMap< Integer, Vertex > vertices = new HashMap< Integer, Vertex >();
 
