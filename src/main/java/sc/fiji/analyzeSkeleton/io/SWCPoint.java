@@ -82,6 +82,11 @@ public class SWCPoint implements Comparable< SWCPoint >
 		return z;
 	}
 
+	public double getRadius()
+	{
+		return radius;
+	}
+
 	public int getPrevious()
 	{
 		return previous;

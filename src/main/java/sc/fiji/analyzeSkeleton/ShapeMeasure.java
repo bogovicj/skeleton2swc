@@ -1,7 +1,10 @@
 package sc.fiji.analyzeSkeleton;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import sc.fiji.analyzeSkeleton.io.SwcAsGraph;
 
 public class ShapeMeasure
 {
@@ -28,7 +31,7 @@ public class ShapeMeasure
 	
 	protected DistancePair edgeDistance( Edge e )
 	{
-		
+	
 		double totalDist = 0.0;
 
 		Point v = e.getV1().getPoints().get( 0 );
@@ -83,5 +86,21 @@ public class ShapeMeasure
 			if( LOWER > TOTAL )
 				System.err.println("LOWER < TOTAL");
 		}
+	}
+
+	public static void main( String[] args )
+	{
+		String skelOrg = "/nrs/saalfeld/john/projects/flyChemStainAtlas/eval/ants_ag/nblasteval/20161102_32_C1_Scope_#1_C2_Skeleton_1_xfm.swc";
+		String skelXfm = "/nrs/saalfeld/john/projects/flyChemStainAtlas/eval/ants_ag/nblasteval/20161102_32_C1_Scope_#1_C2_Skeleton_1_xfm.swc";
+		
+		Graph gOrig = SwcAsGraph.load( new File( skelOrg )); 
+		//System.out.println( "num edges " + gOrig.getEdges().size());
+		//Graph gXfmd = SwcAsGraph.load( new File( skelXfm )); 
+
+		ShapeMeasure sm = new ShapeMeasure( gOrig );
+		//System.out.println( sm );
+		sm.compute();
+		System.out.println( sm.print());
+
 	}
 }

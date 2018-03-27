@@ -52,10 +52,14 @@ public class SwcAsGraph
 
 		int i = 0;
 		boolean first = true;
-		ArrayList< Point > slab = new ArrayList< Point >();
 		Vertex lastVertex = null;
 		double length = 0;
+		
+		HashMap< Integer, ArrayList<Point>> vertex2Slab = new HashMap<Integer, ArrayList<Point>>();
+		HashMap< Integer, Integer > slabPt2VertexPt = new HashMap< Integer, Integer >();  
+		
 		// assumes that all "slabs" are adjacent in the list
+		// ... turns out that this is not true.  Time to fix!
 		for ( SWCPoint swcPt : swcPts )
 		{
 			Point p = new Point( (int) swcPt.getX(), (int) swcPt.getY(),
@@ -67,12 +71,12 @@ public class SwcAsGraph
 
 			if ( branchAndTipIds.contains( swcPt.getId() ) )
 			{
-
+				
 				// make the vertex
 				Vertex v = new Vertex();
 				v.addPoint( p );
 				g.addVertex( v );
-				vertices.put( i, v );
+				vertices.put( swcPt.getId(), v );
 
 				// Add an edge
 
@@ -85,8 +89,26 @@ public class SwcAsGraph
 				{
 					// If we don't already know the vertex opposite this edge,
 					// find it
-					if ( lastVertex == null )
+//					if ( lastVertex == null )
+//						lastVertex = vertices.get( swcPt.getPrevious() );
+					
+//					// FOR DEBUG
+//					if ( lastVertex == null )
+//					{
+//						// if its still null for some reason
+//						System.out.println( "has key " + swcPt.getPrevious() + "? " + vertices.containsKey( swcPt.getPrevious() ));
+//					}
+					
+					if ( vertices.containsKey( swcPt.getPrevious()) )
 						lastVertex = vertices.get( swcPt.getPrevious() );
+					else if ( slabPt2VertexPt.containsKey( swcPt.getPrevious()) )
+						lastVertex = vertices.get( slabPt2VertexPt.get( swcPt.getPrevious()));
+
+					ArrayList<Point> slab = vertex2Slab.get( swcPt.getPrevious() );
+					// create a new, empty slab, if one does not exist
+					if( slab == null )
+						slab = new ArrayList<Point>();
+
 
 					// make the edge and add it
 					Edge e = new Edge( lastVertex, v, slab, length );
@@ -95,24 +117,60 @@ public class SwcAsGraph
 
 					// reset
 					lastVertex = null;
-					slab = new ArrayList< Point >();
+//					slab.clear();
 					length = 0;
 				}
-			} else
+			} 
+			else
 			{
-				if ( slab == null )
-				{
-					slab = new ArrayList< Point >();
-				}
+//				if ( lastVertex == null )
+//				{
+//					lastVertex = vertices.get( swcPt.getPrevious() );
+//					System.out.println("lastVertex = " + swcPt.getPrevious() + " for pt " + swcPt.getId());
+//					if ( lastVertex == null )
+//					{
+//						System.out.println("  but is still null :( ");
+//					}
+//				}
+			
+//				if( swcPt.getId() == 339 )
+//				{
+//					System.out.println( "adding 339 as slab" );
+//				}
+				
+				// get the correct slab
+				ArrayList<Point> slab = null;
 
-				if ( lastVertex == null )
+				int vertexIdx = -1;
+				if( vertices.containsKey( swcPt.getPrevious() ))
 				{
-					lastVertex = vertices.get( swcPt.getPrevious() );
+					vertexIdx = swcPt.getPrevious();
+					slabPt2VertexPt.put( swcPt.getId(), vertexIdx );
+
+					
+					// make a new slab since this is the first point
+					// of this slab (for this vertex)
+					slab = new ArrayList<Point>();
+					vertex2Slab.put( swcPt.getId(), slab );
 				}
+				else if( slabPt2VertexPt.containsKey( swcPt.getPrevious() ))
+				{
+					vertexIdx = slabPt2VertexPt.get( swcPt.getPrevious() );
+					slabPt2VertexPt.put( swcPt.getId(), vertexIdx );
+
+					// get the slab corresponding to the parent of this point
+					slab = vertex2Slab.get( swcPt.getPrevious());
+					vertex2Slab.put( swcPt.getId(), slab );
+				}
+				else
+				{
+					System.out.println( "uh-oh" );
+					continue;
+				}
+				
 				slab.add( p );
 			}
 			length++;
-
 			i++;
 		}
 		return g;
