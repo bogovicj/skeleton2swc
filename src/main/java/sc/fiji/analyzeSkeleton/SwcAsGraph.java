@@ -1,4 +1,4 @@
-package sc.fiji.analyzeSkeleton.io;
+package sc.fiji.analyzeSkeleton;
 
 import java.io.File;
 import java.io.FileOutputStream;

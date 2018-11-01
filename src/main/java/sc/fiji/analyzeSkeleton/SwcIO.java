@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
-import sc.fiji.analyzeSkeleton.io.SWCPoint;
+import sc.fiji.analyzeSkeleton.SWCPoint;
 
 public class SwcIO
 {

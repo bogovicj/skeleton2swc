@@ -25,7 +25,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package sc.fiji.analyzeSkeleton.io;
+package sc.fiji.analyzeSkeleton;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;

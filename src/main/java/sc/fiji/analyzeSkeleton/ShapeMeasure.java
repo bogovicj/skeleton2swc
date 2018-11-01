@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import sc.fiji.analyzeSkeleton.io.SwcAsGraph;
+import sc.fiji.analyzeSkeleton.SwcAsGraph;
 
 public class ShapeMeasure
 {
